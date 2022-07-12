@@ -14,27 +14,33 @@ namespace HttpReportServer.Services
             _reports = new ConcurrentDictionary<Guid, ReportModel>();
         }
 
+        private readonly object _lock_object = new object();
+
 
         public Task<CreateReportResponse> CreateReportAsync(CreateReportRequest request)
         {
-            if (this._reports.ContainsKey(request.ReportModel.ReportId))
+            lock (_lock_object)
             {
-                return Task.FromResult(CreateReportResponse.Failure("Object with same Id already exists!"));
+                if (this._reports.ContainsKey(request.ReportModel.ReportId))
+                {
+                    return Task.FromResult(CreateReportResponse.Failure("Object with same Id already exists!"));
+
+                }
+
+                var sameJobNameExists = this._reports
+                    .Any(x => string.Equals(x.Value.JobName, request.ReportModel.JobName));
+
+                if (sameJobNameExists)
+                {
+                    return Task.FromResult(CreateReportResponse.Failure("Object with same Job Name already exists!"));
+                }
+
+                var addResult = _reports.TryAdd(request.ReportModel.ReportId, request.ReportModel);
+
+                if (addResult == false)
+                    throw new InvalidOperationException($"Fatal error add new report with id {request.ReportModel.ReportId}");
 
             }
-
-            var sameJobNameExists = this._reports
-                .Any(x => string.Equals(x.Value.JobName, request.ReportModel.JobName));
-
-            if (sameJobNameExists)
-            {
-                return Task.FromResult(CreateReportResponse.Failure("Object with same Job Name already exists!"));
-            }
-
-            var addResult = _reports.TryAdd(request.ReportModel.ReportId, request.ReportModel);
-
-            if (addResult == false)
-                throw new InvalidOperationException($"Fatal error add new report with id {request.ReportModel.ReportId}");
 
             return Task.FromResult(CreateReportResponse.Ok);
         }
