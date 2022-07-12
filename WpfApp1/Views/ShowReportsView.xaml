@@ -1,0 +1,112 @@
+﻿<UserControl x:Class="WpfApp1.Views.ShowReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp1.Views"
+             xmlns:viewModels="clr-namespace:WpfApp1.ViewModels"
+             xmlns:System="clr-namespace:System;assembly=System.Runtime"
+             mc:Ignorable="d" d:DesignWidth="800" FontFamily="Calibri" FontSize="16" Height="650">
+    <UserControl.DataContext>
+        <viewModels:ShowReportsViewModel/>
+    </UserControl.DataContext>
+    <Control.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="3,10,0,4"></Setter>
+            <Setter Property="FontSize" Value="16"></Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="18"></Setter>
+        </Style>
+        <Style x:Key="TextLabel">
+            <Setter Property="Control.FontFamily" Value="Calibri"></Setter>
+            <Setter Property="Control.FontSize" Value="14"></Setter>
+            <Setter Property="Control.FontWeight" Value="Bold"></Setter>
+            <Setter Property="Control.Margin" Value="0,12,0,0"></Setter>
+        </Style>
+    </Control.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row ="0" Grid.Column="0" Grid.RowSpan="7" Grid.ColumnSpan="3" Margin="50,60,50,0">
+            <StackPanel Background="White">
+                <ListBox ItemsSource="{Binding Reports}" SelectedValue="{Binding Path=ReportModel}" Height="300">
+
+                </ListBox>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel Grid.Row ="0" Grid.Column="3" Grid.RowSpan="7" Grid.ColumnSpan="2" Margin="0,60,0,0">
+            <StackPanel Background="White">
+                <TextBlock Style="{StaticResource TextLabel}">Job title</TextBlock>
+                <TextBlock Text="{Binding ReportInfo.JobName}"></TextBlock>
+
+                <TextBlock Style="{StaticResource TextLabel}">Report type</TextBlock>
+                <TextBlock Text="{Binding ReportInfo.ReportType.Description}"></TextBlock>
+
+                <TextBlock Style="{StaticResource TextLabel}">Monitoring objects</TextBlock>
+                <ListView ItemsSource="{Binding ReportInfo.MonitoringObjects}" Height="146">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel Grid.Row ="0" Grid.Column="5" Grid.RowSpan="7" Grid.ColumnSpan="5" Margin="20,60,70,0">
+            <StackPanel Background="White">
+                <TextBlock Style="{StaticResource TextLabel}">First report date/time</TextBlock>
+                <TextBlock Text="{Binding ReportInfo.FirstReportDateTime}"></TextBlock>
+                <TextBlock Style="{StaticResource TextLabel}">Report periodicity</TextBlock>
+                <TextBlock Text="{Binding ReportInfo.ReportPeriodicityDefine.Description}"></TextBlock>
+
+                <TextBlock Style="{StaticResource TextLabel}">Report building parameters</TextBlock>
+                <ListView ItemsSource="{Binding ReportInfo.ReportBuildingParameters}" Height="146">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding .Description}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </DockPanel>
+
+        <DockPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="1" Grid.ColumnSpan="2" Height="35" VerticalAlignment="Top" Margin="50,0,0,0">
+            <StackPanel Background="White">
+                <TextBlock Text="List of reports" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="22"></TextBlock>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel Grid.Column="3" Grid.Row="0" Grid.RowSpan="1" Grid.ColumnSpan="2" Height="35" VerticalAlignment="Top">
+            <StackPanel Background="White">
+                <TextBlock Text="Report details" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="22"></TextBlock>
+            </StackPanel>
+        </DockPanel>
+        <DockPanel Grid.Column="2" Grid.Row="4" Grid.RowSpan="1" Grid.ColumnSpan="4" Margin="20,0,20,0">
+            <StackPanel Background="White" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding DisplayError}" Foreground="Red"></TextBlock>
+                <Button Content="Delete Report" Background="#FFFF6E6E" Click="OnDeleteReportClicked"></Button>
+            </StackPanel>
+        </DockPanel>
+
+    </Grid>
+</UserControl>
